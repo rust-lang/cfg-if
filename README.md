@@ -28,6 +28,10 @@ cfg_if! {
         fn foo() { /* fallback implementation */ }
     }
 }
+
+fn main() {
+    foo();
+}
 ```
 
 # License
