@@ -26,6 +26,8 @@
 //! # fn main() {}
 //! ```
 
+#![cfg(not(test))] #![no_std]
+
 #![doc(html_root_url = "http://alexcrichton.com/cfg-if")]
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
