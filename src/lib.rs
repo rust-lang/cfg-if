@@ -21,6 +21,17 @@
 //!     } else {
 //!         fn foo() { /* fallback implementation */ }
 //!     }
+//!
+//!     if #[cfg(windows)] {
+//!
+//!         /// windows specific module
+//!         mod windows_only;
+//!
+//!         if #[test] {
+//!             /// test for `windows_only`
+//!             mod test;
+//!         }
+//!     }
 //! }
 //!
 //! # fn main() {}
@@ -34,6 +45,58 @@
 
 #[macro_export]
 macro_rules! cfg_if {
+    (
+        if #[$($cfg:tt)*] { $($inner:tt)* }
+        $($rest:tt)*
+    ) => {
+        cfg_if! {
+            @IF(if #[$($cfg)*] { cfg_if! { $($inner)* } })
+            $($rest)*
+        }
+    };
+    (
+        @IF($($if:tt)*)
+        else if #[$($e_cfg:tt)*] { $($e_inner:tt)* }
+        $($rest:tt)*
+    ) => {
+        cfg_if! {
+            @IF(
+                $($if)* 
+                else if #[$($e_cfg)*] { cfg_if! { $($e_inner)* } }
+            )
+            $($rest)*
+        }
+    };
+    (
+        @IF($($if:tt)*)
+        else { $($e_inner:tt)* }
+        $($rest:tt)*
+    ) => {
+        __flat_cfg_if! {
+            $($if)* 
+            else { cfg_if! { $($e_inner)* } }
+        }
+        cfg_if! {
+            $($rest)*
+        }
+    };
+    (
+        @IF($($if:tt)*)
+        $($rest:tt)*
+    ) => {
+        __flat_cfg_if! { $($if)* }
+        cfg_if! { $($rest)* }
+    };
+    ($it:item $($rest:tt)*) => {
+        $it
+        cfg_if! { $($rest)* }
+    };
+    () => {}
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! __flat_cfg_if {
     ($(
         if #[cfg($($meta:meta),*)] { $($it:item)* }
     ) else * else {
@@ -57,7 +120,7 @@ macro_rules! cfg_if {
             $( ( ($($e_met),*) ($($e_it)*) ), )*
             ( () () ),
         }
-    }
+    };
 }
 
 #[macro_export]
@@ -122,6 +185,32 @@ mod tests {
         }
     }
 
+    cfg_if! {
+        fn works8() -> bool { true }
+        if #[cfg(test)] {
+            fn works6() -> bool { true }
+
+            if #[cfg(foo)] {
+                fn works7() -> bool { false }
+            } else {
+                fn works7() -> bool { true }
+            }
+        }
+        fn works9() -> bool { true }
+    }
+
+    cfg_if! {
+        if #[cfg(not(test))] {
+            fn works10() -> bool { false }
+        } else if #[cfg(foo)] {
+            fn works10() -> bool { false }
+        } else {
+            if #[cfg(test)] {
+                fn works10() -> bool { true }
+            }
+        }
+    }
+
     #[test]
     fn it_works() {
         assert!(works1().is_some());
@@ -129,5 +218,10 @@ mod tests {
         assert!(works3());
         assert!(works4().is_some());
         assert!(works5());
+        assert!(works6());
+        assert!(works7());
+        assert!(works8());
+        assert!(works9());
+        assert!(works10());
     }
 }
