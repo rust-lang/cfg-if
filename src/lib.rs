@@ -45,16 +45,21 @@
 
 #[macro_export]
 macro_rules! cfg_if {
+    // Match the first if-block
     (
         if #[$($cfg:tt)*] { $($inner:tt)* }
         $($rest:tt)*
     ) => {
+        // Enter internal rule.
         cfg_if! {
+            // Evaluate inner if-statments.
             @IF(if #[$($cfg)*] { cfg_if! { $($inner)* } })
             $($rest)*
         }
     };
+    // Internal rule: if a else-if-block exists, match it.
     (
+        // Evaluated if-block.
         @IF($($if:tt)*)
         else if #[$($e_cfg:tt)*] { $($e_inner:tt)* }
         $($rest:tt)*
@@ -62,16 +67,20 @@ macro_rules! cfg_if {
         cfg_if! {
             @IF(
                 $($if)* 
+                // Evaluate inner if-statments.
                 else if #[$($e_cfg)*] { cfg_if! { $($e_inner)* } }
             )
             $($rest)*
         }
     };
+    // Internal rule: if a else-block exists, match it and exit internal rule.
     (
+        // Evaluated if-blocks.
         @IF($($if:tt)*)
         else { $($e_inner:tt)* }
         $($rest:tt)*
     ) => {
+        // Forward the whole if-statment to `__flat_cfg_if`.
         __flat_cfg_if! {
             $($if)* 
             else { cfg_if! { $($e_inner)* } }
@@ -80,6 +89,8 @@ macro_rules! cfg_if {
             $($rest)*
         }
     };
+    // Internal rule: if nither else-if-block or else-block exists, forward evaluated if-statment
+    // and exit internal rule.
     (
         @IF($($if:tt)*)
         $($rest:tt)*
@@ -87,6 +98,7 @@ macro_rules! cfg_if {
         __flat_cfg_if! { $($if)* }
         cfg_if! { $($rest)* }
     };
+    // Leave items unchanged.
     ($it:item $($rest:tt)*) => {
         $it
         cfg_if! { $($rest)* }
