@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/alexcrichton/cfg-if.svg?branch=master)](https://travis-ci.org/alexcrichton/cfg-if)
 
-[Documentation](http://alexcrichton.com/cfg-if)
+[Documentation](https://docs.rs/cfg-if)
 
 A macro to ergonomically define an item depending on a large number of #[cfg]
 parameters. Structured like an if-else chain, the first matching branch is the
