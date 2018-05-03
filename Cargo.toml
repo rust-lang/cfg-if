@@ -6,7 +6,7 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/alexcrichton/cfg-if"
 homepage = "https://github.com/alexcrichton/cfg-if"
-documentation = "http://alexcrichton.com/cfg-if"
+documentation = "https://docs.rs/cfg-if"
 description = """
 A macro to ergonomically define an item depending on a large number of #[cfg]
 parameters. Structured like an if-else chain, the first matching branch is the
