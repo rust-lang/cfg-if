@@ -4,7 +4,7 @@
 //! preprocessor macro by allowing definition of a cascade of `#[cfg]` cases,
 //! emitting the implementation which matches first.
 //!
-//! This allows you to conveniently provide a long list #[cfg]'d blocks of code
+//! This allows you to conveniently provide a long list `#[cfg]`'d blocks of code
 //! without having to rewrite each clause multiple times.
 //!
 //! # Example
