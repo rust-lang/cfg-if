@@ -1,4 +1,4 @@
-//! A macro for defining #[cfg] if-else statements.
+//! A macro for defining `#[cfg]` if-else statements.
 //!
 //! The macro provided by this crate, `cfg_if`, is similar to the `if/elif` C
 //! preprocessor macro by allowing definition of a cascade of `#[cfg]` cases,
