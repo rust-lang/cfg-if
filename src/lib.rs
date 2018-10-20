@@ -32,7 +32,7 @@
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
 
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(
