@@ -6,12 +6,16 @@ matrix:
     - rust: nightly
     - name: "master doc to gh-pages"
       rust: nightly
-      if: branch = master
       script:
         - cargo doc --no-deps
-        - curl -O https://raw.githubusercontent.com/alexcrichton/rust-travis-deploy/master/travis-deploy.rs
-        - rustc travis-deploy.rs
-        - (cd target/doc && ../../travis-deploy)
+      deploy:
+        provider: script
+        script:
+          - curl -O https://raw.githubusercontent.com/alexcrichton/rust-travis-deploy/master/travis-deploy.rs
+          - rustc travis-deploy.rs
+          - (cd target/doc && ../../travis-deploy)
+        on:
+          branch: master
 script:
   - cargo build --verbose
   - cargo test --verbose
