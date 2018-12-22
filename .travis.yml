@@ -4,17 +4,14 @@ matrix:
     - rust: stable
     - rust: beta
     - rust: nightly
-    - rust: nightly
-      name: "master docs to gh-pages"
-      script: cargo doc --no-deps
-      deploy:
-        local-dir: target/doc
-        provider: pages
-        skip-cleanup: true
-        github-token: $GITHUB_TOKEN
-        keep-history: true
-        on:
-          branch: master
+    - name: "master doc to gh-pages"
+      rust: nightly
+      if: branch = master
+      script:
+        - cargo doc --no-deps
+        - curl -O https://raw.githubusercontent.com/alexcrichton/rust-travis-deploy/master/travis-deploy.rs
+        - rustc travis-deploy.rs
+        - (cd target/doc && ../../travis-deploy)
 script:
   - cargo build --verbose
   - cargo test --verbose
