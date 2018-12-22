@@ -5,8 +5,10 @@ matrix:
     - rust: beta
     - rust: nightly
     - rust: nightly
+      name: "master docs to gh-pages"
       script: cargo doc --no-deps
       deploy:
+        local-dir: target/doc
         provider: pages
         skip-cleanup: true
         github-token: $GITHUB_TOKEN
