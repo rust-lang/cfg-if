@@ -1,6 +1,6 @@
 # cfg-if
 
-[![Build Status](https://travis-ci.org/alexcrichton/cfg-if.svg?branch=master)](https://travis-ci.org/alexcrichton/cfg-if)
+[![Build Status](https://travis-ci.com/alexcrichton/cfg-if.svg?branch=master)](https://travis-ci.com/alexcrichton/cfg-if)
 
 [Documentation](https://docs.rs/cfg-if)
 
