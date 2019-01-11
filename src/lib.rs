@@ -32,6 +32,8 @@
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
 
+/// The main macro provided by this crate. See crate documentation for more
+/// information.
 #[macro_export(local_inner_macros)]
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
