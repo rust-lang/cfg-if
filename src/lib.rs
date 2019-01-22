@@ -26,11 +26,12 @@
 //! # fn main() {}
 //! ```
 
-#![no_std]
-
+#![cfg_attr(not(feature = "use_core"), feature(no_core))]
 #![doc(html_root_url = "https://docs.rs/cfg-if")]
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
+#![cfg_attr(not(feature = "use_core"), no_core)]
+#![cfg_attr(feature = "use_core", no_std)]
 
 /// The main macro provided by this crate. See crate documentation for more
 /// information.

@@ -13,6 +13,11 @@ item that gets emitted.
 cfg-if = "0.1"
 ```
 
+The `use_core` feature is enabled by default and builds the crate with libcore
+by using the `#![no_std]` attribute. When this feature is disabled, this crate
+is built without libcore support by using the `#![no_core]` attribute - this
+makes use of the `#![feature(no_core)]` and requires a nightly version of Rust.
+
 ## Example
 
 ```rust

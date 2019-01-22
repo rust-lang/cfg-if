@@ -17,6 +17,12 @@ matrix:
 script:
   - cargo build --verbose
   - cargo test --verbose
+  # Tests with no_core
+  - |
+    if [ "${TRAVIS_RUST_VERSION}" == "nightly" ]; then
+      cargo build --verbose --no-default-features
+    fi
+
 notifications:
   email:
     on_success: never
