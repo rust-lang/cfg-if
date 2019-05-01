@@ -15,3 +15,6 @@ item that gets emitted.
 
 [badges]
 travis-ci = { repository = "alexcrichton/cfg-if" }
+
+[dev-dependencies]
+doc-comment = "0.3"

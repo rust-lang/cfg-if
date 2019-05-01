@@ -32,6 +32,13 @@
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
 
+#[cfg(test)]
+#[macro_use]
+extern crate doc_comment;
+
+#[cfg(test)]
+doctest!("../README.md");
+
 /// The main macro provided by this crate. See crate documentation for more
 /// information.
 #[macro_export(local_inner_macros)]
