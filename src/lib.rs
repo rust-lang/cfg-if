@@ -31,7 +31,7 @@
 
 /// The main macro provided by this crate. See crate documentation for more
 /// information.
-#[macro_export(local_inner_macros)]
+#[macro_export]
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(
@@ -39,7 +39,7 @@ macro_rules! cfg_if {
     ) else * else {
         $($it2:item)*
     }) => {
-        cfg_if! {
+        $crate::cfg_if! {
             @__items
             () ;
             $( ( ($($meta),*) ($($it)*) ), )*
@@ -54,7 +54,7 @@ macro_rules! cfg_if {
             else if #[cfg($($e_met:meta),*)] { $($e_it:item)* }
         )*
     ) => {
-        cfg_if! {
+        $crate::cfg_if! {
             @__items
             () ;
             ( ($($i_met),*) ($($i_it)*) ),
@@ -72,12 +72,12 @@ macro_rules! cfg_if {
         // Emit all items within one block, applying an approprate #[cfg]. The
         // #[cfg] will require all `$m` matchers specified and must also negate
         // all previous matchers.
-        cfg_if! { @__apply cfg(all($($m,)* not(any($($not),*)))), $($it)* }
+        $crate::cfg_if! { @__apply cfg(all($($m,)* not(any($($not),*)))), $($it)* }
 
         // Recurse to emit all other items in `$rest`, and when we do so add all
         // our `$m` matchers to the list of `$not` matchers as future emissions
         // will have to negate everything we just matched as well.
-        cfg_if! { @__items ($($not,)* $($m,)*) ; $($rest)* }
+        $crate::cfg_if! { @__items ($($not,)* $($m,)*) ; $($rest)* }
     };
 
     // Internal macro to Apply a cfg attribute to a list of items
