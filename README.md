@@ -16,10 +16,7 @@ cfg-if = "0.1"
 ## Example
 
 ```rust
-#[macro_use]
-extern crate cfg_if;
-
-cfg_if! {
+cfg_if::cfg_if! {
     if #[cfg(unix)] {
         fn foo() { /* unix specific functionality */ }
     } else if #[cfg(target_pointer_width = "32")] {
