@@ -1,7 +1,5 @@
 # cfg-if
 
-[![Build Status](https://travis-ci.com/alexcrichton/cfg-if.svg?branch=master)](https://travis-ci.com/alexcrichton/cfg-if)
-
 [Documentation](https://docs.rs/cfg-if)
 
 A macro to ergonomically define an item depending on a large number of #[cfg]
