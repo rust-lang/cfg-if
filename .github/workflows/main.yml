@@ -42,19 +42,14 @@ jobs:
           rustup default stable
       - name: Build documentation
         run: cargo doc --no-deps
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Publish documentation
         run: |
           cd target/doc
           git init
           git add .
           git -c user.name='ci' -c user.email='ci' commit -m init
-          git push -f -q https://$ACTOR:$GITHUB_TOKEN@github.com/$REPOSITORY HEAD:gh-pages
+          git push -f -q https://git:$GITHUB_TOKEN@github.com/$REPOSITORY HEAD:gh-pages
         if: github.event_name == 'push' && github.event.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
-          ACTOR: ${{ github.actor }}
           REPOSITORY: ${{ github.repository }}
