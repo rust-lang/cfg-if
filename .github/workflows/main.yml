@@ -48,7 +48,5 @@ jobs:
           git init
           git add .
           git -c user.name='ci' -c user.email='ci' commit -m init
-          git push -f -q https://git:$GITHUB_TOKEN@github.com/${{ github.repository }} HEAD:gh-pages
+          git push -f -q https://git:${{ secrets.github_token }}@github.com/${{ github.repository }} HEAD:gh-pages
         if: github.event_name == 'push' && github.event.ref == 'refs/heads/master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
