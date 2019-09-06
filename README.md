@@ -1,5 +1,6 @@
 # cfg-if
 
+![[CI status](https://github.com/alexcrichton/cfg-if/actionshttps://github.com/alexcrichton/cfg-if/actions)](https://github.com/alexcrichton/cfg-if/workflows/CI/badge.svg)
 [Documentation](https://docs.rs/cfg-if)
 
 A macro to ergonomically define an item depending on a large number of #[cfg]
