@@ -2,10 +2,19 @@
 //!
 //! The macro provided by this crate, `cfg_if`, is similar to the `if/elif` C
 //! preprocessor macro by allowing definition of a cascade of `#[cfg]` cases,
-//! emitting the implementation which matches first.
+//! emitting the items of the condition that matches first. This allows you to
+//! conveniently provide a long list `#[cfg]`'d blocks of code without having to
+//! rewrite each clause multiple times.
 //!
-//! This allows you to conveniently provide a long list `#[cfg]`'d blocks of code
-//! without having to rewrite each clause multiple times.
+//! Please note that this macro only works for
+//! [items](https://doc.rust-lang.org/stable/reference/items.html?highlight=item#items),
+//! things which exist at the top level of a module. This means that it does not
+//! work with methods within an impl block, including methods within a trait
+//! impl block, and it also does not work with blocks inside of a function or
+//! method.
+//!
+//! Quirk: it's possible to use `else` without any `if` branches. In this case,
+//! the items contained are simply emitted unconditionally.
 //!
 //! # Example
 //!
