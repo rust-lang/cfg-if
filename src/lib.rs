@@ -84,7 +84,8 @@ macro_rules! cfg_if {
         #[$m] $crate::cfg_if! { @__identity $($tokens)* }
     };
 
-    // Internal macro to Apply a cfg attribute to a list of items
+    // Internal macro to make __apply work out right for different match types,
+    // because of how macros matching/expand stuff.
     (@__identity $($tokens:tt)*) => {
         $($tokens)*
     };
