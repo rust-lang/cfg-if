@@ -152,4 +152,25 @@ mod tests {
             assert_eq!(10, 5+5);
         }}
     }
+
+    trait Trait {
+        fn blah(&self);
+    }
+
+    #[allow(dead_code)]
+    struct Struct;
+
+    impl Trait for Struct {
+        cfg_if! {
+            if #[cfg(feature = "blah")] {
+                fn blah(&self) {
+                    unimplemented!();
+                }
+            } else {
+                fn blah(&self) {
+                    unimplemented!();
+                }
+            }
+        }
+    }
 }
