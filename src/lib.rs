@@ -34,30 +34,30 @@
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(
-        if #[cfg($($meta:meta),*)] { $($it:item)* }
+        if #[cfg($($meta:meta),*)] { $($tokens:tt)* }
     ) else * else {
-        $($it2:item)*
+        $($tokens2:tt)*
     }) => {
         $crate::cfg_if! {
             @__items
             () ;
-            $( ( ($($meta),*) ($($it)*) ), )*
-            ( () ($($it2)*) ),
+            $( ( ($($meta),*) ($($tokens)*) ), )*
+            ( () ($($tokens2)*) ),
         }
     };
 
     // match if/else chains lacking a final `else`
     (
-        if #[cfg($($i_met:meta),*)] { $($i_it:item)* }
+        if #[cfg($($i_met:meta),*)] { $($i_tokens:tt)* }
         $(
-            else if #[cfg($($e_met:meta),*)] { $($e_it:item)* }
+            else if #[cfg($($e_met:meta),*)] { $($e_tokens:tt)* }
         )*
     ) => {
         $crate::cfg_if! {
             @__items
             () ;
-            ( ($($i_met),*) ($($i_it)*) ),
-            $( ( ($($e_met),*) ($($e_it)*) ), )*
+            ( ($($i_met),*) ($($i_tokens)*) ),
+            $( ( ($($e_met),*) ($($e_tokens)*) ), )*
             ( () () ),
         }
     };
@@ -67,11 +67,11 @@ macro_rules! cfg_if {
     // Collects all the negated cfgs in a list at the beginning and after the
     // semicolon is all the remaining items
     (@__items ($($not:meta,)*) ; ) => {};
-    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ), $($rest:tt)*) => {
-        // Emit all items within one block, applying an approprate #[cfg]. The
+    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($tokens:tt)*) ), $($rest:tt)*) => {
+        // Emit all items within one block, applying an appropriate #[cfg]. The
         // #[cfg] will require all `$m` matchers specified and must also negate
         // all previous matchers.
-        $crate::cfg_if! { @__apply cfg(all($($m,)* not(any($($not),*)))), $($it)* }
+        #[cfg(all($($m,)* not(any($($not),*))))] $crate::cfg_if! { @__identity $($tokens)* }
 
         // Recurse to emit all other items in `$rest`, and when we do so add all
         // our `$m` matchers to the list of `$not` matchers as future emissions
@@ -79,9 +79,10 @@ macro_rules! cfg_if {
         $crate::cfg_if! { @__items ($($not,)* $($m,)*) ; $($rest)* }
     };
 
-    // Internal macro to Apply a cfg attribute to a list of items
-    (@__apply $m:meta, $($it:item)*) => {
-        $(#[$m] $it)*
+    // Internal macro to make __apply work out right for different match types,
+    // because of how macros matching/expand stuff.
+    (@__identity $($tokens:tt)*) => {
+        $($tokens)*
     };
 }
 
@@ -136,5 +137,19 @@ mod tests {
         assert!(works3());
         assert!(works4().is_some());
         assert!(works5());
+    }
+
+    #[test]
+    #[allow(clippy::assertions_on_constants)]
+    fn test_usage_within_a_function() {
+        cfg_if! {if #[cfg(debug_assertions)] {
+            // we want to put more than one thing here to make sure that they
+            // all get configured properly.
+            assert!(cfg!(debug_assertions));
+            assert_eq!(4, 2+2);
+        } else {
+            assert!(works1().is_some());
+            assert_eq!(10, 5+5);
+        }}
     }
 }
