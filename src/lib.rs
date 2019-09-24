@@ -71,17 +71,12 @@ macro_rules! cfg_if {
         // Emit all items within one block, applying an appropriate #[cfg]. The
         // #[cfg] will require all `$m` matchers specified and must also negate
         // all previous matchers.
-        $crate::cfg_if! { @__apply cfg(all($($m,)* not(any($($not),*)))), $($tokens)* }
+        #[cfg(all($($m,)* not(any($($not),*))))] $crate::cfg_if! { @__identity $($tokens)* }
 
         // Recurse to emit all other items in `$rest`, and when we do so add all
         // our `$m` matchers to the list of `$not` matchers as future emissions
         // will have to negate everything we just matched as well.
         $crate::cfg_if! { @__items ($($not,)* $($m,)*) ; $($rest)* }
-    };
-
-    // Internal macro to Apply a cfg attribute to a list of items
-    (@__apply $m:meta, $($tokens:tt)*) => {
-        #[$m] $crate::cfg_if! { @__identity $($tokens)* }
     };
 
     // Internal macro to make __apply work out right for different match types,
