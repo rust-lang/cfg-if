@@ -11,4 +11,6 @@ jobs:
           cargo new foo
           cd foo
           echo 'log = "0.4.11"' >> Cargo.toml
+          export CARGO_HTTP_DEBUG=true
+          export CARGO_LOG=cargo::ops::registry=trace
           cargo +beta-i686-unknown-linux-gnu fetch
