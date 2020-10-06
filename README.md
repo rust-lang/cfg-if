@@ -8,7 +8,7 @@ item that gets emitted.
 
 ```toml
 [dependencies]
-cfg-if = "0.1"
+cfg-if = "1.0"
 ```
 
 ## Example
