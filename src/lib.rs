@@ -23,9 +23,10 @@
 //! # fn main() {}
 //! ```
 
-#![no_std]
+
 #![doc(html_root_url = "https://docs.rs/cfg-if")]
 #![deny(missing_docs)]
+#![forbid(unsafe_code)]
 #![cfg_attr(test, deny(warnings))]
 
 /// The main macro provided by this crate. See crate documentation for more
@@ -103,7 +104,7 @@ macro_rules! cfg_if {
 mod tests {
     cfg_if! {
         if #[cfg(test)] {
-            use core::option::Option as Option2;
+            use std::option::Option as Option2;
             fn works1() -> Option2<u32> { Some(1) }
         } else {
             fn works1() -> Option<u32> { None }
@@ -130,7 +131,7 @@ mod tests {
 
     cfg_if! {
         if #[cfg(test)] {
-            use core::option::Option as Option3;
+            use std::option::Option as Option3;
             fn works4() -> Option3<u32> { Some(1) }
         }
     }
