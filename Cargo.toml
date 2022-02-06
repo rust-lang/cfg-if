@@ -13,6 +13,18 @@ parameters. Structured like an if-else chain, the first matching branch is the
 item that gets emitted.
 """
 edition = "2018"
+# Require Rust >= 1.32, which added the `?` repetition operator
+#
+# See here: https://blog.rust-lang.org/2019/01/17/Rust-1.32.0.html#macro-improvements
+#
+# NOTE: This field was added in Rust 1.56.
+# On older versions this will do nothing and display a warning
+#
+# To bump the MSRV:
+# 1. Update this fields
+# 2. Update the README
+# 3. Update github actions file
+rust-version = "1.32"
 
 [badges]
 travis-ci = { repository = "alexcrichton/cfg-if" }

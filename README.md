@@ -38,6 +38,9 @@ fn foo() { /* non-unix, 32-bit functionality */ }
 fn foo() { /* fallback implementation */ }        
 ```
 
+# Minimum Supported Rust Version
+This project supports [Rust 1.32](https://blog.rust-lang.org/2019/01/17/Rust-1.32.0.html) or later.
+
 # License
 
 This project is licensed under either of
