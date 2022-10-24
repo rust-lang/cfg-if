@@ -1,0 +1,35 @@
+name: Publish documentation to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+
+# Sets permissions of `GITHUB_TOKEN` to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Rust Stable
+        run: |
+          rustup update stable
+          rustup default stable
+      - name: Build documentation
+        run: cargo doc --no-deps
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'target/doc'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
