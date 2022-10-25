@@ -4,8 +4,8 @@ version = "1.0.0"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/alexcrichton/cfg-if"
-homepage = "https://github.com/alexcrichton/cfg-if"
+repository = "https://github.com/rust-lang/cfg-if"
+homepage = "https://github.com/rust-lang/cfg-if"
 documentation = "https://docs.rs/cfg-if"
 description = """
 A macro to ergonomically define an item depending on a large number of #[cfg]
