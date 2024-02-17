@@ -166,6 +166,7 @@ mod tests {
         }}
     }
 
+    #[allow(dead_code)]
     trait Trait {
         fn blah(&self);
     }
