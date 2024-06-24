@@ -22,11 +22,26 @@
 //!
 //! # fn main() {}
 //! ```
+//!
+//! You can have other `if` conditions in the same macro call:
+//!
+//! ```
+//! cfg_if::cfg_if! {
+//!     if #[cfg(unix)] {
+//!         fn foo() { /* unix specific functionality */ }
+//!     }
+//!     if #[cfg(feature = "bar")] {
+//!         fn bar() {}
+//!     }
+//! }
+//!
+//! # fn main() {}
+//! ```
 
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/cfg-if")]
 #![deny(missing_docs)]
-#![cfg_attr(test, deny(warnings))]
+#![cfg_attr(test, deny(warnings), allow(unexpected_cfgs))]
 
 /// The main macro provided by this crate. See crate documentation for more
 /// information.
@@ -48,6 +63,26 @@ macro_rules! cfg_if {
         }
     };
 
+    // Allow to multiple conditions in a same call.
+    (
+        $(
+            if #[cfg( $i_meta:meta )] { $( $i_tokens:tt )* }
+        ) else+
+        else { $( $e_tokens:tt )* }
+        if $($extra_conditions:tt)+
+    ) => {
+        $crate::cfg_if! {
+            @__items () ;
+            $(
+                (( $i_meta ) ( $( $i_tokens )* )) ,
+            )+
+            (() ( $( $e_tokens )* )) ,
+        }
+        $crate::cfg_if! {
+            if $($extra_conditions)+
+        }
+    };
+
     // match if/else chains lacking a final `else`
     (
         if #[cfg( $i_meta:meta )] { $( $i_tokens:tt )* }
@@ -61,6 +96,26 @@ macro_rules! cfg_if {
             $(
                 (( $e_meta ) ( $( $e_tokens )* )) ,
             )*
+        }
+    };
+
+    // Allow to multiple conditions in a same call.
+    (
+        if #[cfg( $i_meta:meta )] { $( $i_tokens:tt )* }
+        $(
+            else if #[cfg( $e_meta:meta )] { $( $e_tokens:tt )* }
+        )*
+        if $($extra_conditions:tt)+
+    ) => {
+        $crate::cfg_if! {
+            @__items () ;
+            (( $i_meta ) ( $( $i_tokens )* )) ,
+            $(
+                (( $e_meta ) ( $( $e_tokens )* )) ,
+            )*
+        }
+        $crate::cfg_if! {
+            if $($extra_conditions)+
         }
     };
 
@@ -143,6 +198,32 @@ mod tests {
         }
     }
 
+    cfg_if! {
+        if #[cfg(foo)] {
+            fn works6() -> bool { false }
+        } else if #[cfg(test)] {
+            fn works6() -> bool { true }
+        }
+        if #[cfg(test)] {
+            fn works7() -> bool { true }
+        } else {
+            fn works7() -> bool { false }
+        }
+    }
+
+    cfg_if! {
+        if #[cfg(test)] {
+            fn works8() -> bool { true }
+        } else if #[cfg(foo)] {
+            fn works8() -> bool { false }
+        }
+        if #[cfg(foo)] {
+            fn works9() -> bool { false }
+        } else if #[cfg(test)] {
+            fn works9() -> bool { true }
+        }
+    }
+
     #[test]
     fn it_works() {
         assert!(works1().is_some());
@@ -150,6 +231,10 @@ mod tests {
         assert!(works3());
         assert!(works4().is_some());
         assert!(works5());
+        assert!(works6());
+        assert!(works7());
+        assert!(works8());
+        assert!(works9());
     }
 
     #[test]
