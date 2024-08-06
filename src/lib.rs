@@ -67,7 +67,7 @@ macro_rules! cfg_if {
     // Internal and recursive macro to emit all the items
     //
     // Collects all the previous cfgs in a list at the beginning, so they can be
-    // negated. After the semicolon is all the remaining items.
+    // negated. After the semicolon are all the remaining items.
     (@__items ( $( $_:meta , )* ) ; ) => {};
     (
         @__items ( $( $no:meta , )* ) ;
