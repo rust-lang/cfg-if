@@ -9,15 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.2](https://github.com/rust-lang/cfg-if/compare/v1.0.1...v1.0.2) - 2025-08-19
 
-### Other
-
-- Fix some ugly and inconsistent formatting.
 - Remove `@__identity` rule.
-- Bump actions/checkout from 4 to 5
 
 ## [1.0.1](https://github.com/rust-lang/cfg-if/compare/v1.0.0...v1.0.1) - 2025-06-09
-
-### Other
 
 - Remove `compiler-builtins` from `rustc-dep-of-std` dependencies
 - Remove redundant configuration from Cargo.toml
