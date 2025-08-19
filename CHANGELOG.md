@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.3](https://github.com/rust-lang/cfg-if/compare/v1.0.2...v1.0.3) - 2025-08-19
 
-### Other
-
 - Revert "Remove `@__identity` rule."
 
 ## [1.0.2](https://github.com/rust-lang/cfg-if/compare/v1.0.1...v1.0.2) - 2025-08-19
