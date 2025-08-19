@@ -82,7 +82,7 @@ macro_rules! cfg_if {
             $( $yes , )?
             not(any( $( $no ),* ))
         ))]
-        $crate::cfg_if! { @__identity $( $tokens )* }
+        $( $tokens )*
 
         // Recurse to emit all other items in `$rest`, and when we do so add all
         // our `$yes` matchers to the list of `$no` matchers as future emissions
@@ -91,12 +91,6 @@ macro_rules! cfg_if {
             @__items ( $( $no , )* $( $yes , )? ) ;
             $( $rest , )*
         }
-    };
-
-    // Internal macro to make __apply work out right for different match types,
-    // because of how macros match/expand stuff.
-    (@__identity $( $tokens:tt )* ) => {
-        $( $tokens )*
     };
 }
 
