@@ -82,7 +82,15 @@ macro_rules! cfg_if {
             $( $yes , )?
             not(any( $( $no ),* ))
         ))]
-        $crate::cfg_if! { @__identity $( $tokens )* }
+        // Subtle: You might think we could put `$( $tokens )*` here. But if
+        // that contains multiple items then the `#[cfg(all(..))]` above would
+        // only apply to the first one. By wrapping `$( $tokens )*` in this
+        // macro call, we temporarily group the items into a single thing (the
+        // macro call) that will be included/excluded by the `#[cfg(all(..))]`
+        // as appropriate. If the `#[cfg(all(..))]` succeeds, the macro call
+        // will be included, and then evaluated, producing `$( $tokens )*`. See
+        // also the "issue #90" test below.
+        $crate::cfg_if! { @__temp_group $( $tokens )* }
 
         // Recurse to emit all other items in `$rest`, and when we do so add all
         // our `$yes` matchers to the list of `$no` matchers as future emissions
@@ -93,9 +101,8 @@ macro_rules! cfg_if {
         }
     };
 
-    // Internal macro to make __apply work out right for different match types,
-    // because of how macros match/expand stuff.
-    (@__identity $( $tokens:tt )* ) => {
+    // See the "Subtle" comment above.
+    (@__temp_group $( $tokens:tt )* ) => {
         $( $tokens )*
     };
 }
@@ -143,6 +150,21 @@ mod tests {
             fn works5() -> bool { true }
         }
     }
+
+    // In issue #90 there was a bug that caused only the first item within a
+    // block to be annotated with the produced `#[cfg(...)]`. In this example,
+    // it meant that the first `type _B` wasn't being omitted as it should have
+    // been, which meant we had two `type _B`s, which caused an error. See also
+    // the "Subtle" comment above.
+    cfg_if!(
+        if #[cfg(target_os = "no-such-operating-system-good-sir!")] {
+            type _A = usize;
+            type _B = usize;
+        } else {
+            type _A = i32;
+            type _B = i32;
+        }
+    );
 
     #[test]
     fn it_works() {
