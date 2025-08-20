@@ -41,8 +41,8 @@ macro_rules! cfg_if {
             else { $( $e_tokens:tt )* }
         )?
     ) => {
-        $crate::cfg_if! {
-            @__items () ;
+        $crate::cfg_if_items! {
+            () ;
             (( $i_meta ) ( $( $i_tokens )* )),
             $(
                 (( $ei_meta ) ( $( $ei_tokens )* )),
@@ -52,14 +52,21 @@ macro_rules! cfg_if {
             )?
         }
     };
+}
 
+#[macro_export]
+#[doc(hidden)]
+macro_rules! cfg_if_items {
     // Internal and recursive macro to emit all the items
     //
     // Collects all the previous cfgs in a list at the beginning, so they can be
     // negated. After the semicolon are all the remaining items.
-    (@__items ( $( $_:meta , )* ) ; ) => {};
     (
-        @__items ( $( $no:meta , )* ) ;
+        ( $( $_:meta , )* ) ;
+        // no more tokens
+    ) => {};
+    (
+        ( $( $no:meta , )* ) ;
         (( $( $yes:meta )? ) ( $( $tokens:tt )* )),
         $( $rest:tt , )*
     ) => {
@@ -78,21 +85,23 @@ macro_rules! cfg_if {
         // as appropriate. If the `#[cfg(all(..))]` succeeds, the macro call
         // will be included, and then evaluated, producing `$( $tokens )*`. See
         // also the "issue #90" test below.
-        $crate::cfg_if! { @__temp_group $( $tokens )* }
+        $crate::cfg_if_temp_group! { $( $tokens )* }
 
         // Recurse to emit all other items in `$rest`, and when we do so add all
         // our `$yes` matchers to the list of `$no` matchers as future emissions
         // will have to negate everything we just matched as well.
-        $crate::cfg_if! {
-            @__items ( $( $no , )* $( $yes , )? ) ;
+        $crate::cfg_if_items! {
+            ( $( $no , )* $( $yes , )? ) ;
             $( $rest , )*
         }
     };
+}
 
+#[macro_export]
+#[doc(hidden)]
+macro_rules! cfg_if_temp_group {
     // See the "Subtle" comment above.
-    (@__temp_group $( $tokens:tt )* ) => {
-        $( $tokens )*
-    };
+    ($( $tokens:tt )*) => { $( $tokens )* };
 }
 
 #[cfg(test)]
