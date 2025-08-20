@@ -33,35 +33,24 @@
 /// information.
 #[macro_export]
 macro_rules! cfg_if {
-    // match if/else chains with a final `else`
-    (
-        $(
-            if #[cfg( $i_meta:meta )] { $( $i_tokens:tt )* }
-        ) else+
-        else { $( $e_tokens:tt )* }
-    ) => {
-        $crate::cfg_if! {
-            @__items () ;
-            $(
-                (( $i_meta ) ( $( $i_tokens )* )) ,
-            )+
-            (() ( $( $e_tokens )* )) ,
-        }
-    };
-
-    // match if/else chains lacking a final `else`
     (
         if #[cfg( $i_meta:meta )] { $( $i_tokens:tt )* }
         $(
-            else if #[cfg( $e_meta:meta )] { $( $e_tokens:tt )* }
+            else if #[cfg( $ei_meta:meta )] { $( $ei_tokens:tt )* }
         )*
+        $(
+            else { $( $e_tokens:tt )* }
+        )?
     ) => {
         $crate::cfg_if! {
             @__items () ;
-            (( $i_meta ) ( $( $i_tokens )* )) ,
+            (( $i_meta ) ( $( $i_tokens )* )),
             $(
-                (( $e_meta ) ( $( $e_tokens )* )) ,
+                (( $ei_meta ) ( $( $ei_tokens )* )),
             )*
+            $(
+                (() ( $( $e_tokens )* )),
+            )?
         }
     };
 
@@ -72,7 +61,7 @@ macro_rules! cfg_if {
     (@__items ( $( $_:meta , )* ) ; ) => {};
     (
         @__items ( $( $no:meta , )* ) ;
-        (( $( $yes:meta )? ) ( $( $tokens:tt )* )) ,
+        (( $( $yes:meta )? ) ( $( $tokens:tt )* )),
         $( $rest:tt , )*
     ) => {
         // Emit all items within one block, applying an appropriate #[cfg]. The
