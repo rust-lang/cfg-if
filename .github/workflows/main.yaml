@@ -4,6 +4,10 @@ on: [push, pull_request]
 permissions:
   contents: read
 
+env:
+  RUSTDOCFLAGS: -Dwarnings
+  RUSTFLAGS: -Dwarnings
+
 jobs:
   test:
     name: Test

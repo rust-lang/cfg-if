@@ -26,7 +26,6 @@
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/cfg-if")]
 #![deny(missing_docs)]
-#![cfg_attr(test, deny(warnings))]
 #![cfg_attr(test, allow(unexpected_cfgs))] // we test with features that do not exist
 
 /// The main macro provided by this crate. See crate documentation for more
