@@ -197,6 +197,7 @@ mod tests {
         }
     }
 
+    #[cfg(not(MSRV_TEST))]
     cfg_if! {
         if #[cfg(false)] {
             fn works6() -> bool { false }
