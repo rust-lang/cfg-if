@@ -154,6 +154,17 @@ mod tests {
         }
     );
 
+    #[cfg(not(msrv_test))]
+    cfg_if! {
+        if #[cfg(false)] {
+            fn works6() -> bool { false }
+        } else if #[cfg(true)] {
+            fn works6() -> bool { true }
+        } else if #[cfg(false)] {
+            fn works6() -> bool { false }
+        }
+    }
+
     #[test]
     fn it_works() {
         assert!(works1().is_some());
@@ -161,6 +172,8 @@ mod tests {
         assert!(works3());
         assert!(works4().is_some());
         assert!(works5());
+        #[cfg(not(msrv_test))]
+        assert!(works6());
     }
 
     #[test]
@@ -194,18 +207,6 @@ mod tests {
             } else {
                 fn blah(&self) { unimplemented!(); }
             }
-        }
-    }
-
-    #[cfg(not(MSRV_TEST))]
-    cfg_if! {
-        if #[cfg(false)] {
-            fn works6() -> bool { false }
-        } else if #[cfg(true)] {
-            #[allow(dead_code)]
-            fn works6() -> bool { true }
-        } else if #[cfg(false)] {
-            fn works6() -> bool { true }
         }
     }
 }
