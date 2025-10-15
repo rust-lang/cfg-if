@@ -31,7 +31,7 @@ jobs:
         run: |
           set -eux
           # Remove `-Dwarnings` at the MSRV since lints may be different
-          [ "${{ matrix.rust }}" = "1.32" ] && export RUSTFLAGS=""
+          [ "${{ matrix.rust }}" = "1.32" ] && export RUSTFLAGS="--cfg msrv_test"
           cargo test
 
   rustfmt:

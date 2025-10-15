@@ -33,9 +33,9 @@
 #[macro_export]
 macro_rules! cfg_if {
     (
-        if #[cfg( $i_meta:meta )] { $( $i_tokens:tt )* }
+        if #[cfg( $($i_meta:tt)+ )] { $( $i_tokens:tt )* }
         $(
-            else if #[cfg( $ei_meta:meta )] { $( $ei_tokens:tt )* }
+            else if #[cfg( $($ei_meta:tt)+ )] { $( $ei_tokens:tt )* }
         )*
         $(
             else { $( $e_tokens:tt )* }
@@ -43,9 +43,9 @@ macro_rules! cfg_if {
     ) => {
         $crate::cfg_if! {
             @__items () ;
-            (( $i_meta ) ( $( $i_tokens )* )),
+            (( $($i_meta)+ ) ( $( $i_tokens )* )),
             $(
-                (( $ei_meta ) ( $( $ei_tokens )* )),
+                (( $($ei_meta)+ ) ( $( $ei_tokens )* )),
             )*
             $(
                 (() ( $( $e_tokens )* )),
@@ -57,18 +57,18 @@ macro_rules! cfg_if {
     //
     // Collects all the previous cfgs in a list at the beginning, so they can be
     // negated. After the semicolon are all the remaining items.
-    (@__items ( $( $_:meta , )* ) ; ) => {};
+    (@__items ( $( ($($_:tt)*) , )* ) ; ) => {};
     (
-        @__items ( $( $no:meta , )* ) ;
-        (( $( $yes:meta )? ) ( $( $tokens:tt )* )),
+        @__items ( $( ($($no:tt)+) , )* ) ;
+        (( $( $($yes:tt)+ )? ) ( $( $tokens:tt )* )),
         $( $rest:tt , )*
     ) => {
         // Emit all items within one block, applying an appropriate #[cfg]. The
         // #[cfg] will require all `$yes` matchers specified and must also negate
         // all previous matchers.
         #[cfg(all(
-            $( $yes , )?
-            not(any( $( $no ),* ))
+            $( $($yes)+ , )?
+            not(any( $( $($no)+ ),* ))
         ))]
         // Subtle: You might think we could put `$( $tokens )*` here. But if
         // that contains multiple items then the `#[cfg(all(..))]` above would
@@ -84,7 +84,7 @@ macro_rules! cfg_if {
         // our `$yes` matchers to the list of `$no` matchers as future emissions
         // will have to negate everything we just matched as well.
         $crate::cfg_if! {
-            @__items ( $( $no , )* $( $yes , )? ) ;
+            @__items ( $( ($($no)+) , )* $( ($($yes)+) , )? ) ;
             $( $rest , )*
         }
     };
@@ -154,6 +154,17 @@ mod tests {
         }
     );
 
+    #[cfg(not(msrv_test))]
+    cfg_if! {
+        if #[cfg(false)] {
+            fn works6() -> bool { false }
+        } else if #[cfg(true)] {
+            fn works6() -> bool { true }
+        } else if #[cfg(false)] {
+            fn works6() -> bool { false }
+        }
+    }
+
     #[test]
     fn it_works() {
         assert!(works1().is_some());
@@ -161,6 +172,8 @@ mod tests {
         assert!(works3());
         assert!(works4().is_some());
         assert!(works5());
+        #[cfg(not(msrv_test))]
+        assert!(works6());
     }
 
     #[test]
