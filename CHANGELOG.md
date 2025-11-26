@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5](https://github.com/rust-lang/cfg-if/compare/v1.0.4...v1.0.5) - 2025-11-26
+
+### Other
+
+- Bump actions/checkout from 5 to 6
+
 ## [1.0.4](https://github.com/rust-lang/cfg-if/compare/v1.0.3...v1.0.4) - 2025-10-15
 
 - Support `cfg(true)` and `cfg(false)` ([#99](https://github.com/rust-lang/cfg-if/pull/99))
